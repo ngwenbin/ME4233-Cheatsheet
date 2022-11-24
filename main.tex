@@ -1,0 +1,409 @@
+\documentclass[8pt]{extarticle} % extarticle: font sizes < 10
+\usepackage{refcards}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{vmargin}
+\usepackage{xcolor}
+% A4
+\setpapersize[landscape]{A4}
+\setmarginsrb%
+{1.0cm}  % left
+{1.0cm}  % top
+{1.0cm}  % right
+{1.0cm}  % bottom
+{0ex}    % header height
+{0ex}    % header separation
+{0ex}    % footer height
+{0ex}    % footser separation
+\setlength\columnsep{7mm}
+
+\begin{document}
+\raggedright
+
+\begin{multicols*}{3}
+\section{FD schemes}
+  \subsection{Taylor series expansion general formula}
+  $f(x_i+s) = f(x_i) + f^{(1)}(x_i)\cdot s+\frac{f^{(2)}(x_i)}{2!}\cdot s^2+\frac{f^{(k)}(x_i)}{k!}\cdot s^k+...$\\
+  \subsection{Check consistency}
+  A. \text{unknowns}$\;=n+p-1, \quad n=\text{derivative\;order},\quad p=OOA$\\
+  B. $\lim_{\Delta t,\;\Delta x \Rightarrow 0}\frac{\Delta t}{\Delta x}=0$ (Checks for stability)
+  \vspace{1ex}
+  \subsection{Domain}
+  if $x\in\left[0,\pi\right]$ divided equally, $N=M+2$ grid points\\
+  $\therefore \Delta x=\frac{\pi}{M+1},\quad where\;x_i=i\Delta x,\quad where\;i=0,1,2...,M+1$
+  \vspace{1ex}
+  \subsection{Spatial difference schemes \quad $(h\equiv\Delta x)$}
+  \begin{tabular}{L{2\linewidth}}
+  \tt Forward $\frac{\partial u}{\partial x}: \frac{f(x+\Delta x) - f(x)}{\Delta x} + O(\Delta x)$ \\
+  \\[-0.8em]
+  \tt Forward $\frac{\partial u}{\partial x}: \frac{-3f(x) + 4f(x+\Delta x) + f(x-2\Delta x)}{2\Delta x} + O(\Delta x)^2$ \\
+  \\[-0.8em]
+  \tt Forward $\frac{\partial^2 u}{\partial x^2}: \frac{2f(x)-5f(x+\Delta x) + 4f(x+2\Delta x) - f(x+3\Delta x)}{\Delta x^3} + O(\Delta x)^2$ \\
+  \\[-0.8em]
+  \tt Backward $\frac{\partial u}{\partial x}: \frac{f(x) - f(x-\Delta x)}{\Delta x} + O(\Delta x)$ \\
+  \\[-0.8em]
+  \tt Backward $\frac{\partial u}{\partial x}: \frac{3f(x) - 4f(x-\Delta x) + f(x-2\Delta x)}{2\Delta x} + O(\Delta x)^2$ \\
+  \\[-0.8em]
+  \tt Backward $\frac{\partial^2 u}{\partial x^2}: \frac{2f(x)-5f(x-\Delta x) + 4f(x-2\Delta x) - f(x-3\Delta x)}{\Delta x^3} + O(\Delta x)^2$ \\
+  \\[-0.8em]
+  \tt Central $\frac{\partial u}{\partial x}: \frac{f(x+\Delta x) - f(x-\Delta x)}{2\Delta x} + O(\Delta x)^2$ \\
+  \\[-0.8em]
+  \tt Central $\frac{\partial^2 u}{\partial x^2}: \frac{f(x+\Delta x) -2f(x) + f(x-\Delta x)}{(\Delta x)^2} + O(\Delta x)^2$ \\
+  \\[-0.8em]
+  \end{tabular}
+  \subsection{Temporal difference schemes, \quad $(h\equiv\Delta t)$}
+  \begin{tabular}{L{0.3\linewidth} L{1\linewidth}}
+  \tt Explicit euler & $\left.\frac{\partial u}{\partial t}\right|^n= \frac{u^{n+1}-u^n}{\Delta t}$ \\
+  \\[-0.7em]
+  \tt Expli Leap-frog & $\left.\frac{\partial u}{\partial t}\right|^n = \frac{u^{n+1}-u^{n-1}}{2\Delta t}$ \\
+  \\[-0.7em]
+  \tt 2-step explicit & $\left.\frac{\partial u}{\partial t}\right|^n = \frac{1}{2\Delta t}\left[u^{n+1}+4u^n-5u^{n-1}\right]-\left.\frac{1}{2}\frac{\partial u}{\partial t}\right|^{n-1}$ \\
+  \\[-0.7em]
+  \tt (PC) Predictor & $u^{n+1} = \frac{1}{2}\left[u^n+\hat{u}^{n+1}+ \left.\Delta t\frac{\partial \hat{u}}{\partial t}\right|^{n+1}\right]$ \\
+  \\[-1em]
+  \tt (PC) Corrector & $\hat{u}^{n+1} = u^n + \left.\Delta t\frac{\partial u}{\partial t}\right|^n$ \\
+  \\[-1em]
+  \tt 2nd-order adams-bashforth & $\left.\frac{\partial u}{\partial t}\right|^n = \frac{2}{3h}\left[u^{n+1}-u^n\right]+\left.\frac{1}{3}\frac{\partial u}{\partial t}\right|^{n-1}$ \\
+  \\[-0.7em]
+  \tt Implicit Euler & $\left.\frac{\partial u}{\partial t}\right|^{n+1} = \frac{u^{n+1}-u^n}{\Delta t}$ \\
+  \\[-0.7em]
+  \tt Crank-nicholson & $\left.\frac{\partial u}{\partial t}\right|^{n+1}=\frac{2}{\Delta t}(u^{n+1}-u^n)-\left.\frac{\partial u}{\partial t}\right|^n$ \\
+  \end{tabular}
+ \subsection{Hybrid schemes}
+ \tt \textbf{Dufort Frankel applied to} & $\frac{\partial u}{\partial t}=\alpha\frac{\partial ^2u}{\partial x^2}$\\
+ \tt & $\Rightarrow u_j^{n+1}=u_j^{n-1}+2a\frac{\Delta t}{(\Delta x)^2}\left[u_{j+1}^n-(u_j^{n+1}+u_j^{n-1})+u_{j-1}^n\right]$ \\
+ \vspace{1ex}
+ \tt \textbf{Lax applied to} & $\frac{\partial u}{\partial t}+c\frac{\partial u}{\partial x}=0$\\
+ \tt & $\Rightarrow u_j^{n+1}=\frac{1}{2}(u_{j+1}^n+u_{j-1}^n)+\frac{c}{2}\frac{\Delta t}{\Delta x}(u_{j+1}^n+u_{j-1}^n)$ \\
+ \\[-0.7em]
+ \section{Matrices}
+  \begin{tabular}{L{2\linewidth}}
+  \tt For banded (tridiagonal) matrix B $(a,b,c)$ of order M,\\
+  \tt if $b+2\sqrt{ac}\;cos\frac{m\pi}{M+1}=0\quad \text{for\;}m=1,2,...,M$,\\
+  \tt $\Rightarrow\det (\textbf{B}(a,b,c,))=0,\quad\therefore \textbf{Non-invertible, no unique sol}$\\
+  \tt\\
+  \tt Eigenvalues : $\textbf{det}(A-\lambda I) = 0$\\
+  \tt Eigenvectors : $(A-\lambda_1 I)\vec{v}_1 = 0,\;(A-\lambda_i I)\vec{v}_i = 0,... $\\
+  \tt Determinant (2x2): \\
+  \end{tabular}
+ \section{Linear ODEs}
+  The GS is a linear combination of all fundamental solutions.\\
+  General form will be $u^n=c^n+p^n$
+  \begin{tabular}{L{0.55\linewidth} L{0.6\linewidth}}
+  \tt Gen sol (2nd order homo): & $u(t)=C_1e^{\lambda_1t}+C_2e^{\lambda_2t}$ \\
+  \tt Gen sol (1st order non homo): & $u(t)=u_{cs}(t)+u_{ps}(t)$ \\
+  \tt let homogenous part = 0 $\Rightarrow$ & $\frac{\partial u}{\partial t}-\lambda u=0$\\
+  \tt  & $\therefore u_{cs}(t)=C_1e^{\lambda_1t}$
+  \end{tabular}
+  \vspace{1ex}
+  \subsection{Coupled ODEs}
+  \begin{tabular}{L{0.2\linewidth} L{1\linewidth}}
+  \tt $\frac{d\vec{u}}{dt}$ &  $= A\vec{u}-\vec{f}\quad\textbf{Idea:}\; AE=ED \Rightarrow E^{-1}AE=D$\\
+  \\[-0.9em]
+  \tt $E^{-1}\frac{d\vec{u}}{dt} $ &   $= E^{-1}A\vec{u}-E^{-1}\vec{f}$\\
+  \\[-0.9em]
+  \tt $E^{-1}\frac{d\vec{u}}{dt} $ &  $= E^{-1}A(EE^{-1})\vec{u}-E^{-1}\vec{f} \quad\quad\Leftarrow\textbf{Use }EE^{-1}=I$\\
+  \\[-0.9em]
+  \tt $\Rightarrow\frac{d}{dt}(E^{-1}\vec{u}) $ &  $= D(\lambda)(E^{-1}\vec{u})-E^{-1}\vec{f}  \quad\quad\Leftarrow\textbf{Use }E^{-1}AE=D(\lambda) $\\
+  \\[-0.9em]
+  \tt $\Rightarrow\textbf{Let}$ &  $\vec{U}=E^{-1}\vec{u},\quad\vec{F}=E^{-1}\vec{f}$ \\
+  \\[-0.9em]
+  \tt  &  $\frac{d\vec{U}}{dt} = D(\lambda)\vec{U}-\vec{F},\;\Rightarrow\;\therefore\;\frac{d\vec{U}_i}{dt}=\lambda_iU_i-Fi$\\
+  \\[-0.9em]
+  \end{tabular}
+  \vspace{1ex}
+  \subsection{Solving coupled ODEs numerically}
+  Solution for homogeneous uncoupled ODE is $U_i=Ce^{mt}$\\
+  For temporal derivatives, simply differentiate.\\
+  $\Rightarrow\frac{dU_i}{dt}=\frac{d}{dt}(Ce^{mt}) = mCe^{mt}$\\
+  \vspace{1ex}\\
+  \tt1. Uncouple the ODEs to get $\frac{d\vec{U}}{dt}=D(\lambda)\vec{U}-\vec{F}$\\
+  \textbf{Note that decoupling identity matrix = 1}\\
+  \tt2. Transform eqns to, $\frac{dU_i}{dt}=\lambda_iU_i-F_i$\\
+  \tt3. For $y^{''}+5y^{'}=8x$, homogenous part is $y^{''}+5y^{'}=0$, non-homogenous is the original eqn since it $\neq 0$.\\
+  \tt4. Eg ODE $\frac{\partial u}{\partial t}=\lambda u+\alpha e^{st}$\\
+  \textbf{Complimentary solution*} $\Rightarrow \frac{\partial u}{\partial t}-\lambda u = 0\quad\therefore u_{cs}(t)=\beta_1e^{\lambda_1t}$ \\
+  \textbf{*If polynomial}, use $c^n=\beta\sigma^n \approx \beta e^{\lambda h}$ for every root\\
+  \textbf{Particular solution} $\Rightarrow$ Guess a similar form to non-homo part of ODE E.g. $\alpha e^{st}\;\Rightarrow\quad\therefore u_{ps}(t)=C_2e^{st}$\\
+  \textbf{*If polynomial}, use $u^n_i=\gamma c_i$\\
+  \tt5. Form characteristic polynomial\\
+  \tt6. Recouple $\vec{u}=E\vec{U}$ and solve for constants\\
+  \vspace{0.5ex}
+  \textbf{Example:} $u^{n+2}-4u^{n+1}+3u^n=\alpha a^n$\\
+  \textbf{Characteristic poly}: $u^n=\beta \sigma^n \Rightarrow \sigma^2-4\sigma+3=0$\\
+  Since polynomial has 2 roots, \textbf{Compli sol}: $c^{n}=\beta_{1}\sigma^n_1+\beta_{2}\sigma^n_2$
+  \textbf{Particular sol}: $\frac{\alpha}{a^2-4a+3}a^n$\\
+  $G(S) = \beta_{1}\sigma^n_1+\beta_{2}\sigma^n_2+\frac{\alpha}{a^2-4a+3}a^n$\\
+  \vspace{0.5ex}
+  \vspace{1ex}
+  \subsection{Solving coupled ODEs analytically}
+  1. Uncouple ODEs to get $\frac{d\vec{U}}{dt}=D(\lambda)\vec{U}-\vec{F}$\\
+  2. Decouple into $\frac{dU_i}{dt}=\lambda_iU_i+F_i$ for i=$\lambda_{i...}$\\
+  3. If have constant $F$ after decoupling, particular solution exist, becomes $U_i=C_ie^{\lambda_i}t+\frac{1}{\lambda_i}$, else $U_i=C_ie^{\lambda_i}t$\\
+  4. Convert back to $\vec{u}\quad\Rightarrow\quad\vec{u}=E\vec{U}$
+  \vspace{1ex}
+  \subsection{Isolation Theorem}
+  1. Multiply $E^{-1}$ to all terms.\\
+  2. Add $EE^{-1}$ to right of $A$ matrix, since $EE^{-1} = 1$.\\
+  2. Sub $E^{-1}AE=D$ into equation.
+  \vspace{1ex}
+  \subsection{Exact solution of non-homogenous FDE}
+  Complimentary solution is a \textbf{fluctuating} component, $\sigma \approx e^{\lambda h}$
+  and particular solution is \textbf{steady state} solution.\\
+  $\sigma = e^{\lambda h}=1+\lambda h+\frac{1}{2!}(\lambda h)^2+\frac{1}{3!}(\lambda h)^3+...+O(h)^k$\\
+  Leapfrog will have 2 roots, principal and spurious. Principal roots matches the $e^{\lambda h}$ term while spurious does not.
+  Numerical methods with spurious roots are not self-starting, require additional initial condition.
+  \vspace{1ex}
+  \subsection{Accuracy of temporal discretization}
+  \begin{tabular}{L{0.5\linewidth} L{1\linewidth}}
+  Transient solution error & $\epsilon_\lambda=e^{\lambda \Delta t} - \sigma_{principal}$\\
+  \\[-0.9em]
+  Amplitude error & $\epsilon_{|\lambda |}=1-\sqrt{\sigma^2_r+\sigma^2_i}$\\
+  \\[-0.9em]
+  Phase error & $\epsilon_w=wh-\tan^{-1}(\frac{\sigma_i}{\sigma_r})$\\
+  \\[-0.9em]
+  Particular solution error & $\epsilon_{PS}=p_{numerical}-p_{exact}$\\
+  \\[-0.9em]
+  Exact ODE solution & $u(t) = ce^{\lambda t}+\frac{a}{\mu-\lambda}e^{\mu t}$
+ \end{tabular}
+ \subsection{Stability analysis}
+ ****$|\sigma_i|\leq1$ where the root can be real or complex\\
+  \begin{tabular}{L{0.35\linewidth} L{0.7\linewidth}}
+  Gerschogrin's Circle & $|\lambda_i-A_{ii}|\leq r_i$\\
+   & Need to do $A_{11}, A_{22},..$ Plot and find largest circle.\\
+   \\[-0.9em]
+  Euler forward & $|\sigma_{principal}|=|1+\lambda h|\leq1,\;\;\lambda_{max}=-\frac{4\nu}{(\Delta x)^2}$\\
+  \\[-0.9em]
+  Leapfrog & Unstable if leaves circle. Gives 1 spurious, 1 principal\\
+  \\[-0.9em]
+  MC Pred-corrector & Same as Euler forward, but with a higher OOA for small $\lambda h$\\
+ \end{tabular}\\
+ \textbf{Matrix method}\\
+ 1. Discretize spatial derivatives, reduce PDE to a set of coupled ODEs in the form of: $\frac{d\vec{u}}{dt}=A\vec{u}+\vec{f}$.\\
+ 2. Choose typical eigenvalue of \textbf{A}, called $\lambda_T$, you get $\frac{du}{dt}=\lambda_T\cdot u$.\\
+ 3. Choose temporal FD scheme and sub ODE into FD scheme.\\
+ 4. Add shift operator, $S\approx\frac{u^{n+1}}{u^n}$\\
+ 5. Find dispersion relation, $\sigma_i=\sigma_i(\lambda_T\Delta T)$\\
+ 6. Check FDE stability is met for all roots, $|\sigma_i|\leq1$\\
+ \vspace{1ex}
+ 7. For OOA, binomial exp: $(1+x)^n=1+nx+n(n-1)\frac{x^2}{2!}+n(n-1)(n-2)\frac{x^3}{3!}+...$\\
+ - $\sigma_i $ could be real or complex. If ODE is unstable, FDE stability doesn't matter.\\
+ - Numerical methods are Adams-type if all spurious roots lie at origin when $\Delta t=0$. E.g. Adams-Bashforth, Adam-Moulton\\
+ - Methods of Milne-type (e.g. leap-frog method) have spurious roots at unit circle when $\Delta t=0$. Typically, Milne-type are more accurate but less stable than Adams-type.\\
+ \vspace{1ex}
+ \textbf{ODE Stability criteria} $\Rightarrow Re(\lambda_m)\leq 0$\\
+ \vspace{1ex}
+ \textbf{von Neumann method}\\
+ \vspace{1ex}
+ Sub $u_j^n = v^ne^{ikxj},\;u_{j+1}^n=v^ne^{ik(xj+\Delta x)}\quad,k\Delta x=\theta$\\
+ Amplication factor, $|G|=|\frac{\nu^{n+1}}{\nu^n}\leq1$\\
+ Courant number, $c\frac{\Delta t}{\Delta x}\leq1$\\
+ Diffusion number, S, $\nu\frac{\Delta t}{(\Delta x)^2}\leq\frac{1}{2}$
+ 
+ \section{Boundary Conditions}
+  \begin{tabular}{L{0.2\linewidth} L{1\linewidth}}
+  \tt Periodic & $i=0,1,2,...,N points\quad U_0=U_{N-1}\quad,U_1=U_{N}$\\
+  \\[-0.9em]
+  \tt Neumann & Derivative value at points\\
+  \\[-0.9em]
+  \tt Dirichlet & Fixed value at points
+  \end{tabular}
+  
+  \section{Examples}
+  \subsection{Derive PDE of Burger's eqn}
+  $\frac{\partial u}{\partial t}+C\frac{\partial u}{\partial x}=\nu\frac{\partial^2 u}{\partial x^2}$\\
+  3 point central, 2nd order:\\
+  \vspace{0.8ex}
+  $\frac{\partial u}{\partial t}=(\frac{\nu}{\Delta x^2}-\frac{c}{2\Delta x})u_{i+1}-\frac{2\nu}{\Delta x^2}u_i+(\frac{\nu}{\Delta x^2}+\frac{c}{2\Delta x})u_{i-1}+O(\Delta x)^2$\\
+  \vspace{0.8ex}
+  Domain $x\in[0,1],\quad Grid\Rightarrowi=0,1,2,...,N$\\
+  \vspace{1ex}
+  For Interior points $i=1,2,3...N-1$,\\
+  \begin{tabular}{L{0.15\linewidth} L{1\linewidth}}
+  \tt $i=1,$ & $(\frac{\nu}{\Delta x^2}-\frac{c}{2\Delta x})u_{2}-\frac{2\nu}{\Delta x^2}u_1+(\frac{\nu}{\Delta x^2}+\frac{c}{2\Delta x})u_{0}$\\
+  \tt $i=2,$ & $(\frac{\nu}{\Delta x^2}-\frac{c}{2\Delta x})u_{3}-\frac{2\nu}{\Delta x^2}u_2+(\frac{\nu}{\Delta x^2}+\frac{c}{2\Delta x})u_{1}$\\
+  \tt \cdots\\
+  \tt $i=N-2,$ & $(\frac{\nu}{\Delta x^2}-\frac{c}{2\Delta x})u_{N-1}-\frac{2\nu}{\Delta x^2}u_{N-2}+(\frac{\nu}{\Delta x^2}+\frac{c}{2\Delta x})u_{N-3}$\\
+  \tt $i=N-1,$ & $(\frac{\nu}{\Delta x^2}-\frac{c}{2\Delta x})u_{N}-\frac{2\nu}{\Delta x^2}u_{N-1}+(\frac{\nu}{\Delta x^2}+\frac{c}{2\Delta x})u_{N-2}$\\
+  \\[-0.9em]
+  
+  \end{tabular}
+  \begin{gather*}
+   \frac{\partial u}{\partial t}=\left[
+   \frac{\nu}{\Delta x^2}
+    \begin{bmatrix}
+     -2 & 1  & 0  &  & 0\\
+     1  & -2 & 1  &  &  \\
+     0  & 1  & -2 & 1 & \\
+        &    & \ddots  & \ddots & 1\\
+     0  &   & 0  & 1 & -2
+     \end{bmatrix}
+     -\right.
+  \end{gather*}
+  \left.\frac{c}{2\Delta x}\begin{bmatrix}
+     0 & 1  & 0  &  & 0\\
+     -1  & 0 & 1  &  &  \\
+     0  & -1  & 0 & 1 & \\
+        &    & \ddots  & \ddots & 1\\
+     0  &   & 0  & -1 & 0
+     \end{bmatrix}\right]
+  \begin{bmatrix}
+      u_1\\
+      u_2\\
+      \vdots\\
+      u_{N-2}\\
+      u_{N-1}
+     \end{bmatrix} + \begin{bmatrix}
+      \frac{ca}{2\Delta x}+\frac{\nu a}{(\Delta x)^2}\\
+      0\\
+      \vdots\\
+      0\\
+      \frac{-cb}{2\Delta x}+\frac{\nu b}{(\Delta x)^2}
+     \end{bmatrix}\\
+  Expressed in the form of $\frac{\partial \vec{u}}{\partial t} = A\vec{u}+\vec{f}$
+  \subsection{Solve coupled ODE numerically, find $u_1, u_2$ (Crank Nic)}
+  \begin{math}
+  \frac{du_1}{dt}=-\frac{3}{2}u_1-\frac{1}{2}u_2-1\quad,
+  \end{math}
+  \begin{math}
+  \frac{du_2}{dt}=-\frac{1}{2}u_1-\frac{3}{2}u_2+1
+  \end{math}\\
+  \vspace{1ex}
+  A=\begin{bmatrix}
+  -1.5 & -0.5\\
+  -0.5 & -1.5
+  \end{bmatrix}
+  \lambda=det(A-\lambda I)\quad\Rightarrow \lambda_1=-1, \lambda_2=-2\\
+  E=\begin{bmatrix}
+  1 & 1\\
+  1 & -1
+  \end{bmatrix}\quad D=\begin{bmatrix}
+  -2 & 0\\
+  0 & -1
+  \end{bmatrix}\\
+  \begin{math}
+  u^{n+1}=u^n0.5h\left[\left.\frac{\partial u}{\partial t}\right|^{n+1}+\left.\frac{\partial u}{\partial t}\right|^n\right]
+  \end{math}\\
+  \textbf{Sub} \begin{math}
+  \Rightarrow\quad\frac{\partial \vec{u}}{\partial t} = A\vec{u}+\vec{f}
+  \end{math}\\
+  \begin{math}
+  \vec{u}^{n+1}=\vec{u}^n+0.5h\left[(A\vec{u}^{n+1}+\vec{f})+(A\vec{u}^n+\vec{f})\right]
+  \end{math}\\
+  \begin{math}
+  (I-0.5hA)\vec{u}^{n+1}=(I+0.5hA)\vec{u}^n+h\vec{f}
+  \end{math}\\
+  \begin{math}
+  E^{-1}\vec{u}^{n+1}-\frac{h}{2}DE^{-1}\vec{u}^{n+1}=E^{-1}\vec{u}^n+\frac{h}{2}DE^{-1}\vec{u}^n+hE^{-1}\vec{f}
+  \end{math}\\
+  \textbf{Sub} \begin{math}
+  \Rightarrow\quad E^{-1}\vec{u}^n=\vec{U}^n,\quad\vec{F}=E^{-1}\vec{f}
+  \end{math}\\
+  \begin{math}
+  (I-0.5hD)\vec{U}^{n+1}=(I+0.5D)\vec{U}^n+h\vec{F}
+  \end{math}\\
+  Change to i \begin{math}
+  \Rightarrow(1-0.5h\lambda_i)U_i^{n+1}=(I+0.5\lambda_i)U_i^n+hF_i
+  \end{math}
+  Complimentary sol, sub $U_i^n=\beta_i\sigma_i^n$ \begin{math}
+  \Rightarrow(1-0.5h\lambda_i)\sigma_i-(I+0.5\lambda_i) = 0 
+  \end{math}\\
+  Particular sol, sub $U_i^n=c_i$ \begin{math}
+  \Rightarrow(1-0.5h\lambda_i)c_i=(I+0.5\lambda_i)c_i+hF_i 
+  \end{math}\\
+  \begin{math}
+  G(S)=\beta_i\sigma_i^n-\frac{F_i}{\lambda_i}
+  \end{math}
+  \begin{math}
+  \Rightarrow U_{1,2}^n=\beta_1(\frac{1-h}{1+h})^n-0,\; \beta_2(\frac{1-0.5h}{1+0.5h})^n-1
+  \end{math}
+  \subsection{Solve coupled ODE analytically}
+  \begin{math}
+  \frac{du_1}{dt}=-\frac{3}{2}u_1-\frac{1}{2}u_2-1\quad,
+  \end{math}
+  \begin{math}
+  \frac{du_2}{dt}=-\frac{1}{2}u_1-\frac{3}{2}u_2+1
+  \end{math}\\
+  \vspace{1ex}
+  Same A, D, E as 5.2. $\Rightarrow\lambda_1=-1, \lambda_2=-2$\\
+  \begin{math}
+  \frac{d \vec{U}}{d t} = D(\lambda)\vec{U}+\vec{F}
+  \end{math} where, 
+  $\vec{F}=E^{-1}\vec{f}=$\begin{bmatrix}
+   0\\
+   -1
+  \end{bmatrix}\\
+  \begin{math}
+  \frac{dU_1}{dt}=\lambda_1U_1+0
+  \end{math},
+  \begin{math}
+  \quad
+  \frac{dU_2}{dt}=\lambda_2U_2-1
+  \end{math}\\
+  \begin{math}
+  U_1=\frac{1}{\lambda_1}\frac{dU_1}{dt}=C_1e^{\lambda_1t}
+  \end{math}\\
+  \begin{math}
+  U_2=\frac{1}{\lambda_2}\frac{dU_2}{dt} + \lambda_2=C_2e^{\lambda_2t} + \frac{1}{\lambda_2}
+  \end{math}\\
+  Recouple back $\vec{u}=E\vec{U}=$
+  \begin{bmatrix}
+      1 & 1\\
+      1 & -1
+  \end{bmatrix}
+  \begin{bmatrix}
+      C_1e^{\lambda_1t}\\
+      C_2e^{\lambda_2t}+\frac{1}{\lambda_2}
+  \end{bmatrix}\\
+  \begin{math}
+  u_1(t)=e^{-2t}+e^{-t}-1\\
+  u_2(t)=e^{-2t}+e^{-t}+1\\
+  \end{math}
+  \subsection{Find dispersion relationship}
+  Model eqn: $\frac{\partial u}{\partial t}=\lambda u+ae^{\mu t}$\\
+  FDE: \begin{math}
+  u^{n+1}=u^n+0.5h\left[3(\frac{\partial u}{\partial t})^n-(\frac{\partial u}{\partial t})^{n-1}\right]
+  \end{math}\\
+  Sub FDE into eqn,\\
+  \begin{math}
+  u^{n+1}-(1+1.5h\lambda)u^n+0.5h\lambda u^{n-1}=0.5ahe^{\mu hn}(3-e^{-\mu h})
+  \end{math}\\
+  Add shift op $s\equiv\frac{u^{n+1}}{u^n}\equiv u \quad$,
+  \begin{math}
+  s^2=(1+1.5h\lambda h)s - 0.5\lambda h
+  \end{math}\\
+  \begin{math}
+  P(\sigma)=P(s)=0,\quad
+  \sigma^2-(1+1.5\lambda h)\sigma + 0.5\lambda h=0
+  \end{math}\\
+  \begin{math}
+  \sigma=\frac{(1+1.5\lambda h\pm \sqrt{(1+1.5\lambda h)^2-2\lambda h}}{2}
+  \end{math}\\
+  $\sigma_{positive}$ is principal root as it matches binom exp of $e^{\lambda h}$
+  \subsection{Fourier series stability neumann}
+  Sub $u_j^n = v^ne^{ikxj},\;u_{j+1}^n=v^ne^{ik(xj+\Delta x)}\quad,k\Delta x=\theta$\\
+  Sub in G, courant, diffusion constants to simplify eqn.\\
+  Express in G\\
+  \vspace{1ex}
+  \begin{math}
+  \nu^{n+1}e^{ikx_j}=\nu^ne^{ikx_j}\left[1+\frac{\Delta t}{\Delta x^2}(1-\frac{3}{2}\Delta x)\right]+
+  \nu^ne^{ik(x_j+\Delta x)}\left[2\frac{\Delta t}{\Delta x^2}(\Delta x-1)\right]+
+  \nu^ne^{ik(x_j+2\Delta x)}\left[\frac{\Delta t}{\Delta x^2}(1-\frac{1}{2}\Delta x)\right]
+  \end{math}\\
+  \begin{math}
+  G\nu^ne^{ikx_j}=\nu^ne^{ikx_j}\left[1+P-\frac{3}{2}Q)\right]+
+  \nu^ne^{ik(x_j+\Delta x)}\left[2(Q-P)\right]+
+  \nu^ne^{ik(x_j+2\Delta x)}(P-\frac{1}{2}Q)
+  \end{math}\\
+  Divide by $\nu^ne^{ikx_j}$ and apply Euler, $e^{i\theta}=\cos\theta+sin\theta$\\
+  \vspace{1ex}
+  \begin{math}
+  G=(1-\frac{1}{2}P)+e^{i2k\Delta x}(\frac{1}{2}P)=(1-\frac{1}{2}P+\frac{1}{P}\cos(2k\Delta x))+i\frac{1}{2}P\sin(2k\Delta x)
+  \end{math}\\
+  Square G and solve inequality.\\
+  $1+P(1-\frac{1}{2}P)\left[cos(2k\Delta x)-1\right]\leq1$\\
+  Since $cos(2k\Delta x)$ is negative, middle term must be +\\
+  $1-\frac{1}{2}P\geq0\Rightarrow\quad P\leq2,\quad\Rightarrow\Delta t\leq 2$
+
+\end{multicols*}
+\end{document}
